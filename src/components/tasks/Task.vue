@@ -2,7 +2,7 @@
 	<q-item 
       	@click="updateTask({id: id, updates: {completed: 
       		!task.completed}})"
-      	:class="!task.completed ? 'bg-orange-1' : 'bg-green-1'"
+      	:class="!task.completed ? 'bg-grey-2' : 'bg-light-green-3'"
       	clickable
       	v-ripple>
         <q-item-section side>
@@ -46,15 +46,29 @@
         </q-item-section>
         
         <q-item-section side>
+        	<div class="row">
+        	<q-btn 
+        		@click.stop="showEditTask = true"
+        		flat 
+        		round 
+        		dense 
+        		color="primary"
+        		icon="edit" />
         	<q-btn 
         		@click.stop="promptToDelete(id)"
         		flat 
         		round 
-        		dense
-        		color="red" 
+        		dense 
         		icon="delete" />
+        	</div>
         </q-item-section>
 
+        <q-dialog v-model="showEditTask">
+      		<edit-task 
+      			@close="showEditTask = false"
+      			:task="task"
+      			:id="id"/>
+    	</q-dialog>
       </q-item>
 </template>
 
@@ -63,7 +77,11 @@
 
 	export default {
 		props: ['task', 'id'],
-		
+		data() {
+			return {
+				showEditTask: false
+			} 
+		},
 		methods: {
 			...mapActions('tasks', ['updateTask', 'deleteTask']),
 
@@ -78,6 +96,10 @@
 		      	})
 
 			}
+		},
+
+		components: {
+			'edit-task': require('components/tasks/modals/EditTask.vue').default
 		}
 	}
 		
